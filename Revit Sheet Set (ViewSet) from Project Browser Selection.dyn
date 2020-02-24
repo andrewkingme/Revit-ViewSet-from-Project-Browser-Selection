@@ -1,0 +1,325 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Revit Sheet Set (ViewSet) from Project Browser Selection",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Python Code for Dynamo\r\n# Create ViewSet from Input\r\n# Coded by Andrew King\r\n# https://andrewkingme.com\r\n\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n# Import RevitAPI\r\nclr.AddReference('RevitAPI')\r\nimport Autodesk\r\nfrom Autodesk.Revit.DB import *\r\n\r\n# Import DocumentManager and TransactionManager\r\nclr.AddReference('RevitServices')\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\n\r\n# Assign input to the IN variables.\r\nviewSetName = IN[0]\r\nviews = UnwrapElement(IN[1])\r\n\r\n# Create empty ViewSet.\r\nviewSet = ViewSet()\r\n\r\n# Add incoming views/sheets to the ViewSet.\r\nfor v in views:\r\n\tviewSet.Insert(v)\r\n\r\n# Activate the PrintManager.\r\nprintManager = DocumentManager.Instance.CurrentDBDocument.PrintManager\r\nprintManager.PrintRange = PrintRange.Select\r\n\r\n# Save the ViewSet.\r\nviewSheetSetting = printManager.ViewSheetSetting\r\nviewSheetSetting.CurrentViewSheetSet.Views = viewSet\r\nviewSheetSetting.SaveAs(viewSetName)\r\noutput = \"ViewSet '\" + viewSetName + \"' created.\"\r\n\r\n#Assign your output to the OUT variable.\r\nOUT = output\r\n",
+      "VariableInputPorts": true,
+      "Id": "de441ec33c244db49a2b62c1813d0d87",
+      "Inputs": [
+        {
+          "Id": "99a95749e7c84521a3b0af30935667ff",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d9729cdfc17146d6a20b8cdacad09417",
+          "Name": "IN[1]",
+          "Description": "Input #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "778c930794e84795a856e856e7fa9b84",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "\"ViewSet Name\";",
+      "Id": "2fa74b77c5bd47db9257970858b2e67c",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a21e90a3b43848d8aded6894e083ae22",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "8689019fd4d848bb9bbf6e4ecdf9ad0e",
+      "Inputs": [
+        {
+          "Id": "8057c4e4230f442b82a9b0a72794c371",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "749dc5e63ff047369fda748eed3b35a5",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "8ef8e96b9f954c22b4c4b431dacd560c",
+      "Inputs": [
+        {
+          "Id": "9c52d0006c4b4a8ea33cc30dcb7a1883",
+          "Name": "",
+          "Description": "Node to evaluate.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ed47872c09fb411596e18d945ad06c08",
+          "Name": "",
+          "Description": "Watch contents.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the output of node."
+    },
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "NodeType": "PythonScriptNode",
+      "Code": "# Python Code for Dynamo\r\n# Output Selected Elements\r\n# Coded by Andrew King\r\n# https://andrewkingme.com\r\n\r\nimport clr\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n#Import RevitNodes\r\nclr.AddReference(\"RevitNodes\")\r\nimport Revit\r\nclr.ImportExtensions(Revit.Elements)\r\n\r\n# Import RevitAPI\r\nclr.AddReference('RevitAPI')\r\nimport Autodesk\r\nfrom Autodesk.Revit.DB import *\r\n\r\n# Import DocumentManager and TransactionManager\r\nclr.AddReference('RevitServices')\r\nimport RevitServices\r\nfrom RevitServices.Persistence import DocumentManager\r\nfrom RevitServices.Transactions import TransactionManager\r\n\r\noutput = []\r\n\r\n# Get ElementIds of Revit selection.\r\nselection = DocumentManager.Instance.CurrentUIApplication.ActiveUIDocument.Selection.GetElementIds()\r\n\r\n# Convert ElementIds to Revit elements.\r\nfor s in selection:\r\n\toutput.append(DocumentManager.Instance.CurrentDBDocument.GetElement(s).ToDSType(True))\r\n\r\n#Assign your output to the OUT variable.\r\nOUT = output",
+      "VariableInputPorts": true,
+      "Id": "9036d3ed06f34951a9cd1b034af028d9",
+      "Inputs": [
+        {
+          "Id": "8c52510705514186a969cd38b7e35f8c",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ec8ed28ca97246e5b3e0977e0e80bb4c",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded IronPython script."
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "778c930794e84795a856e856e7fa9b84",
+      "End": "8057c4e4230f442b82a9b0a72794c371",
+      "Id": "afda8f7b2b274e2a96414f217f7fb3b8"
+    },
+    {
+      "Start": "a21e90a3b43848d8aded6894e083ae22",
+      "End": "99a95749e7c84521a3b0af30935667ff",
+      "Id": "847e62f9f7814b398adfab33b9d1acf6"
+    },
+    {
+      "Start": "ed47872c09fb411596e18d945ad06c08",
+      "End": "d9729cdfc17146d6a20b8cdacad09417",
+      "Id": "3d89711fa3914a9c9fd5f7e092fcb270"
+    },
+    {
+      "Start": "ec8ed28ca97246e5b3e0977e0e80bb4c",
+      "End": "9c52d0006c4b4a8ea33cc30dcb7a1883",
+      "Id": "065db8fd4c774f0aa6ba39100b560f67"
+    }
+  ],
+  "Dependencies": [],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.0.3.8810",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "de441ec33c244db49a2b62c1813d0d87",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 281.087107612663,
+        "Y": -474.483602058993
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "2fa74b77c5bd47db9257970858b2e67c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -56.912892387337507,
+        "Y": -514.27026872565966
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "8689019fd4d848bb9bbf6e4ecdf9ad0e",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 505.08710761266252,
+        "Y": -474.48360205899303
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "8ef8e96b9f954c22b4c4b431dacd560c",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -56.912892387337507,
+        "Y": -404.48360205899303
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Python Script",
+        "Id": "9036d3ed06f34951a9cd1b034af028d9",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -280.91289238733748,
+        "Y": -404.48360205899303
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "4eefd08efd6046e8bc294a15d5cee5a2",
+        "Title": "Select Sheets or Views",
+        "Nodes": [
+          "f24130fdf38f475bbf7c6073ae5d5194"
+        ],
+        "Left": -620.94925235643518,
+        "Top": -401.50349221552835,
+        "Width": 303.0,
+        "Height": 91.0,
+        "FontSize": 18.0,
+        "InitialTop": -369.50349221552835,
+        "InitialHeight": 140.0,
+        "TextblockHeight": 22.0,
+        "Background": "#FFFFC999"
+      },
+      {
+        "Id": "ee163685e25c4734b298818732e856c6",
+        "Title": "ViewSet Name",
+        "Nodes": [
+          "2fa74b77c5bd47db9257970858b2e67c"
+        ],
+        "Left": -66.912892387337507,
+        "Top": -546.27026872565966,
+        "Width": 174.0,
+        "Height": 125.0,
+        "FontSize": 18.0,
+        "InitialTop": -514.27026872565966,
+        "InitialHeight": 145.0,
+        "TextblockHeight": 22.0,
+        "Background": "#FFFFC999"
+      },
+      {
+        "Id": "860762ce24524744bfee7abd157afaa8",
+        "Title": "Revit Sheet Set (ViewSet) from Project Browser Selection\r\n---\r\nVersion 0.1\r\nCoded by Andrew King\r\nhttps://andrewkingme.com\r\n\r\n2018-11-15 Version 0.1\r\nHello World",
+        "Nodes": [],
+        "Left": -618.37778002991388,
+        "Top": -626.1447858698848,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "f24130fdf38f475bbf7c6073ae5d5194",
+        "Title": "Select sheets or views in the Revit Project Browser before running.",
+        "Nodes": [],
+        "Left": -610.94925235643518,
+        "Top": -369.50349221552835,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": 771.10620555240462,
+    "Y": 806.25158856268138,
+    "Zoom": 1.0817367944008802
+  }
+}
